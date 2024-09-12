@@ -10,5 +10,4 @@ plt.xlim(0, 10)  # Set x-axis range from 0 to 10
 plt.xlabel("X-axis")
 plt.ylabel("Y-axis (X^3)")
 plt.title("Line Graph of Y = X^3")
-plt.grid(True)
 plt.show()
