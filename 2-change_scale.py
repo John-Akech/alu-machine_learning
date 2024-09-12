@@ -14,5 +14,4 @@ plt.xlim(0, 28650)   # Set x-axis range from 0 to 28650
 plt.xlabel("Time (years)")            # Label for x-axis
 plt.ylabel("Fraction Remaining")      # Label for y-axis
 plt.title("Exponential Decay of C-14") # Title of the plot
-plt.grid(True, which="both", ls="--")  # Add gridlines for both major and minor ticks
 plt.show()
