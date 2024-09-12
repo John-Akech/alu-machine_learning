@@ -13,5 +13,4 @@ plt.scatter(x, y, color='magenta')  # Scatter plot with magenta points
 plt.xlabel("Height (in)")           # Label for x-axis
 plt.ylabel("Weight (lbs)")          # Label for y-axis
 plt.title("Men's Height vs Weight") # Title of the plot
-plt.grid(True)
 plt.show()
