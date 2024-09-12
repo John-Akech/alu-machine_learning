@@ -19,6 +19,5 @@ plt.xlabel("Time (years)")            # Label for x-axis
 plt.ylabel("Fraction Remaining")      # Label for y-axis
 plt.title("Exponential Decay of Radioactive Elements") # Title of the plot
 plt.legend(loc='upper right')         # Place legend in the upper right corner
-plt.grid(True, which="both", ls="--")  # Add gridlines for both major and minor ticks
 
 plt.show()
