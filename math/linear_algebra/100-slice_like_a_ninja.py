@@ -21,7 +21,6 @@ def np_slice(matrix, axes={}):
 
     return result
 
-
 def extract_slice_params(slice_tuple):
     start = end = step = None
 
