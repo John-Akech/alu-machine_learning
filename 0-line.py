@@ -1,23 +1,15 @@
 #!/usr/bin/env python3
-"""
-This script uses Matplotlib to plot a line graph of the function y = x^3.
-It demonstrates basic plotting with a solid red line and custom axis labels.
-"""
+arr = [9, 8, 2, 3, 9, 4, 1, 0, 3]
 
-import numpy as np
-import matplotlib.pyplot as plt
+# Extract the first two numbers
+arr1 = arr[:2]
 
-# Generate y values
-y = np.arange(0, 11) ** 3
+# Extract the last five numbers
+arr2 = arr[-5:]
 
-# Plot y as a solid red line
-plt.plot(np.arange(0, 11), y, 'r-')  # 'r-' for solid red line
+# Extract the 2nd through 6th numbers
+arr3 = arr[1:6]
 
-# Set axis labels and title
-plt.xlim(0, 10)  # Set x-axis range from 0 to 10
-plt.xlabel("X-axis")
-plt.ylabel("Y-axis (X^3)")
-plt.title("Line Graph of Y = X^3")
-
-# Display the plot
-plt.show()
+print("The first two numbers of the array are: {}".format(arr1))
+print("The last five numbers of the array are: {}".format(arr2))
+print("The 2nd through 6th numbers of the array are: {}".format(arr3))
