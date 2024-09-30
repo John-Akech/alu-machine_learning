@@ -1,7 +1,17 @@
 #!/usr/bin/env python3
 
 def poly_integral(poly, C=0):
-    # Check if poly is a list of numbers and C is an integer
+    """Calculate the integral of a polynomial.
+
+    Args:
+        poly (list): A list of coefficients representing a polynomial.
+        C (int, float): The integration constant (default is 0).
+
+    Returns:
+        list: A list of coefficients representing the integral of the polynomial,
+              or None if the input is invalid.
+    """
+    # Check if poly is a list and C is an integer or float
     if not isinstance(poly, list) or not isinstance(C, (int, float)):
         return None
 
@@ -15,14 +25,11 @@ def poly_integral(poly, C=0):
 
     # Loop through the polynomial and calculate the integral
     for i, coeff in enumerate(poly):
-        if coeff == 0:
-            integral.append(0)  # Append 0 for zero coefficients
+        integral_value = coeff / (i + 1)  # Integral of x^i
+        if integral_value.is_integer():
+            integral.append(int(integral_value))  # Convert to int if whole number
         else:
-            integral_value = coeff / (i + 1)  # Integral of x^i is (x^(i+1))/(i+1)
-            if integral_value.is_integer():
-                integral.append(int(integral_value))  # Convert to int if it's a whole number
-            else:
-                integral.append(integral_value)
+            integral.append(integral_value)
 
     # Remove trailing zeros to make the list as small as possible
     while len(integral) > 1 and integral[-1] == 0:
