@@ -6,7 +6,7 @@ This module contains a function to compute the integral of a polynomial
 represented by a list of coefficients.
 """
 
-def poly_integral(poly, C=0):
+ def poly_integral(poly, C=0):
     """Calculate the integral of a polynomial.
 
     Args:
@@ -33,7 +33,7 @@ def poly_integral(poly, C=0):
     for i, coeff in enumerate(poly):
         integral_value = coeff / (i + 1)  # Integral of x^i
         if integral_value.is_integer():
-            integral.append(int(integral_value))  # Convert to int if whole number
+            integral.append(int(integral_value))
         else:
             integral.append(integral_value)
 
@@ -42,4 +42,3 @@ def poly_integral(poly, C=0):
         integral.pop()
 
     return integral
-
