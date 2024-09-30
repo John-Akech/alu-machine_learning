@@ -43,3 +43,14 @@ def poly_integral(poly, C=0):
         integral.pop()
 
     return integral
+
+
+if __name__ == "__main__":
+    poly = [5, 3, 0, 1]  # Example polynomial
+    print(poly_integral(poly))  # Expected: [0, 5, 1.5, 0, 0.25]
+
+    print(poly_integral([]))  # Expected: [0]
+    print(poly_integral([1, 2, 3]))  # Example case
+    print(poly_integral([0, 0, 0]))  # Expected: [0, 0]
+    print(poly_integral("not a list"))  # Expected: None
+    print(poly_integral([1, 2, "not a number"]))  # Expected: None
