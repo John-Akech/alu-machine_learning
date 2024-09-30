@@ -1,5 +1,11 @@
 #!/usr/bin/env python3
 
+"""Module for polynomial integration.
+
+This module contains a function to compute the integral of a polynomial
+represented by a list of coefficients.
+"""
+
 def poly_integral(poly, C=0):
     """Calculate the integral of a polynomial.
 
