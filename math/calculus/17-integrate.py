@@ -15,8 +15,8 @@ def poly_integral(poly, C=0):
         C (int, float): The integration constant (default is 0).
 
     Returns:
-        list: A list of coefficients representing the integral of the polynomial,
-              or None if the input is invalid.
+        list: A list of coefficients representing the integral of the
+              polynomial, or None if the input is invalid.
     """
     # Check if poly is a list and C is an integer or float
     if not isinstance(poly, list) or not isinstance(C, (int, float)):
@@ -51,6 +51,6 @@ if __name__ == "__main__":
 
     print(poly_integral([]))  # Expected: [0]
     print(poly_integral([1, 2, 3]))  # Example case
-    print(poly_integral([0, 0, 0]))  # Expected: [0, 0]
+    print(poly_integral([0, 0, 0]))  # Expected: [0]
     print(poly_integral("not a list"))  # Expected: None
     print(poly_integral([1, 2, "not a number"]))  # Expected: None
