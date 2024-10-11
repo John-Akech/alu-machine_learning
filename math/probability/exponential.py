@@ -1,13 +1,15 @@
 #!/usr/bin/env python3
-"""Initial Exponential"""
+"""Initializing the Exponential distribution"""
 
 
 class Exponential:
+    
     """Exponential that represents an exponential distribution"""
     e = 2.7182818285
     π = 3.1415926536
 
     def __init__(self, data=None, lambtha=1.):
+        
         """Class constructor
 
         data: list of the data to be used to estimate the distribution
