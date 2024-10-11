@@ -1,19 +1,21 @@
 #!/usr/bin/env python3
-"""Initialize Binomial, normal distribution"""
+"""Initializing the Binomial and normal distribution"""
 
 
 class Binomial:
-    """Class that represents a binomial distribution"""
+    """The Class that represents a binomial distribution"""
+    
     e = 2.7182818285
     π = 3.1415926536
 
     def __init__(self, data=None, n=1, p=0.5):
-        """Class constructor
+        """The Class constructor
 
-        data: is a list of the data to be used to estimate the distribution
-        n: is the number of Bernoulli trials
-        p: is the probability of a success
+        data: a list of the data to be used to estimate the distribution
+        n: the number of Bernoulli trials
+        p: the probability of a success
         """
+        
         self.n = int(n)
         self.p = float(p)
 
@@ -34,10 +36,11 @@ class Binomial:
             self.p = mean / self.n
 
     def pmf(self, k):
-        """Function that calculates the value of the PMF for a given number
+        
+        """The function that calculates the value of the PMF for a given number
         of successes
 
-        k: is the number of successes
+        k: denotes the number of successes
 
         Return: the PMF value for k"""
         k = int(k)
@@ -49,10 +52,11 @@ class Binomial:
         return firstPart * secondPart
 
     def cdf(self, k):
+        
         """Function that calculates the value of the CDF for a given number
         of successes
 
-        k: is the number of successes
+        k: denotes the number of successes
 
         return the CDF value for k"""
         k = int(k)
@@ -61,7 +65,7 @@ class Binomial:
         return sum(self.pmf(i) for i in range(k + 1))
 
     def factorial(self, x):
-        """Function that calculates the factorial of x"""
+        """The function that calculates the factorial of x"""
         result = 1
         for n in range(1, x + 1):
             result *= n
