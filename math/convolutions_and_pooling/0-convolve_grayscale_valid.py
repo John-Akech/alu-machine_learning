@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 """
-This module contains a function to perform a valid convolution on grayscale images.
-
-The `convolve_grayscale_valid` function takes in a batch of grayscale images and 
+This module for a function to perform a valid convolution on grayscale images.
+A batch of grayscale images and 
 a kernel, and it returns the convolved output for each image.
 """
 
