@@ -3,6 +3,22 @@
 import numpy as np
 
 def convolve_grayscale_valid(images, kernel):
+    """
+    Performs a valid convolution on grayscale images.
+
+    Args:
+    images (numpy.ndarray): Shape (m, h, w) containing multiple grayscale images.
+        - m is the number of images
+        - h is the height in pixels of the images
+        - w is the width in pixels of the images
+    kernel (numpy.ndarray): Shape (kh, kw) containing the kernel for the convolution.
+        - kh is the height of the kernel
+        - kw is the width of the kernel
+
+    Returns:
+    numpy.ndarray: Containing the convolved images.
+    """
+    
     # Get the dimensions of images and kernel
     m, h, w = images.shape
     kh, kw = kernel.shape
