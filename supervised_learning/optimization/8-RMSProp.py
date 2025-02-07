@@ -1,24 +1,20 @@
 #!/usr/bin/env python3
-""" Training with RMSProp optimizer
+""" Training with momentum
 """
 
 import tensorflow as tf
 
+
 def create_RMSProp_op(loss, alpha, beta2, epsilon):
-    """Creates the training operation for a neural network using the RMSProp optimization algorithm.
-    
-    Args:
-        loss: Loss function of the network.
-        alpha: Learning rate.
-        beta2: RMSProp decay rate.
-        epsilon: Small value to avoid division by zero.
-        
-    Returns:
-        The RMSProp optimization operation.
+    """ creates the training operation for a neural network in tensorflow
+        using the RMSProp optimization algorithm
+        Args:
+            loss: is the loss of the network
+            alpha: is the learning rate
+            beta2: is the RMSProp weight
+            epsilon: is a small number to avoid division by zero
+        Returns: the RMSProp optimization operation
     """
-    # Use the updated TensorFlow API
-    optimizer = tf.optimizers.RMSprop(learning_rate=alpha, rho=beta2, epsilon=epsilon)
-    
-    # Minimize the loss function
-    train_op = optimizer.minimize(loss)
-    return train_op
+
+    optimizer = tf.train.RMSPropOptimizer(alpha, beta2, epsilon)
+    return optimizer.minimize(loss)
