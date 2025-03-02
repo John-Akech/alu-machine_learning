@@ -20,12 +20,12 @@ if __name__ == '__main__':
 
     # Fetch rocket names and print the counts
     for key, value in sorted(rocket_dict.items(), key=lambda kv: kv[1], reverse=True):
-        rurl = f"https://api.spacexdata.com/v4/rockets/{key}"
+        rurl = "https://api.spacexdata.com/v4/rockets/" + key
         req = requests.get(rurl)
         
         # Check if the request was successful
         if req.status_code == 200:
             rocket_name = req.json()["name"]
-            print(f"{rocket_name}: {value}")
+            print(rocket_name + ": " + str(value))
         else:
-            print(f"Error fetching rocket name for ID {key}")
+            print("Error fetching rocket name for ID " + key)
