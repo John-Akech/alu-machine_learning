@@ -9,6 +9,11 @@ if __name__ == '__main__':
     url = "https://api.spacexdata.com/v4/launches/upcoming"
     r = requests.get(url)
 
+    # Check if the request was successful
+    if r.status_code != 200:
+        print("Failed to retrieve data from SpaceX API")
+        exit(1)
+
     # Initialize variables to track the most recent launch
     recent = None
     launch_name = ""
@@ -37,8 +42,8 @@ if __name__ == '__main__':
     launchpad_local = launchpad["locality"]
 
     # Format the output string
-    string = "{} ({}) & {} - {} ({})".format(
-        launch_name, rocket_name, date, launchpad_name, launchpad_local
+    string = "{} ({}) {} - {} ({})".format(
+        launch_name, date, rocket_name, launchpad_name, launchpad_local
     )
 
     print(string)
