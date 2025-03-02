@@ -15,7 +15,7 @@ def get_user_location(api_url):
     api_url (str): The API endpoint URL to fetch user data from.
 
     Returns:
-    None: Prints the user's location if found, or an appropriate message if not.
+    None: Prints the user's location or an error message if not found.
 
     Raises:
     requests.exceptions.RequestException: If there is an issue with the HTTP request.
