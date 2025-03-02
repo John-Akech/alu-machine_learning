@@ -35,10 +35,12 @@ def get_user_location(api_url):
             location = user_data.get('location', 'Location not provided')
             print(location)
         else:
-            print("Error: Received status code {}".format(res.status_code))
+            error_msg = "Error: Received status code {}".format(res.status_code)
+            print(error_msg)
 
     except requests.exceptions.RequestException as e:
-        print("An error occurred: {}".format(e))
+        error_msg = "An error occurred: {}".format(e)
+        print(error_msg)
 
 
 if __name__ == "__main__":
