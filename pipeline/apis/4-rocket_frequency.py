@@ -2,16 +2,23 @@
 """Pipeline Api"""
 import requests
 
-
 if __name__ == '__main__':
     """pipeline api"""
     url = "https://api.spacexdata.com/v4/launches"
     r = requests.get(url)
-    
+
+    # Debug: Check API response
+    print("Launches API Status Code:", r.status_code)
+    if r.status_code != 200:
+        print("Failed to fetch launches data")
+        exit(1)
+
     # Initialize an empty dictionary to count launches for each rocket
     rocket_dict = {}
 
     for launch in r.json():
+        if "rocket" not in launch:
+            continue  # Skip launches without a rocket field
         rocket_id = launch["rocket"]
         if rocket_id in rocket_dict:
             rocket_dict[rocket_id] += 1
@@ -22,8 +29,9 @@ if __name__ == '__main__':
     for key, value in sorted(rocket_dict.items(), key=lambda kv: kv[1], reverse=True):
         rurl = "https://api.spacexdata.com/v4/rockets/" + key
         req = requests.get(rurl)
-        
-        # Check if the request was successful
+
+        # Debug: Check Rocket API response
+        print("Rocket API Status Code for ID", key, ":", req.status_code)
         if req.status_code == 200:
             rocket_name = req.json()["name"]
             print(rocket_name + ": " + str(value))
