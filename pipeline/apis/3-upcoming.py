@@ -5,6 +5,16 @@ import requests
 import sys
 
 def main():
+    """
+    Fetches and displays the upcoming SpaceX launch information.
+
+    The function retrieves data from the SpaceX API, identifies the soonest
+    upcoming launch, and prints the launch name, date, rocket name, and
+    launchpad details in the specified format.
+
+    Returns:
+        None
+    """
     # SpaceX API endpoint for upcoming launches
     url = "https://api.spacexdata.com/v4/launches/upcoming"
     
