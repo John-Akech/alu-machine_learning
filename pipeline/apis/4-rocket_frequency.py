@@ -15,7 +15,7 @@ def get_all_launches():
             launches.extend(data['docs'])  # 'docs' contains the launch data
             launches_url = data.get('next')  # 'next' is the URL for the next page
         else:
-            print(f"Error fetching data: {response.status_code}")
+            print("Error fetching data: {}".format(response.status_code))
             break
     return launches
 
@@ -38,13 +38,13 @@ if __name__ == "__main__":
         # Get names for each rocket
         rocket_names = {}
         for rocket_id in rocket_frequency.keys():
-            rocket_url = f"https://api.spacexdata.com/v4/rockets/{rocket_id}"
+            rocket_url = "https://api.spacexdata.com/v4/rockets/{}".format(rocket_id)
             response = requests.get(rocket_url)
             if response.status_code == 200:
                 rocket = response.json()
                 rocket_names[rocket_id] = rocket['name']
             else:
-                print(f"Error fetching rocket name: {response.status_code}")
+                print("Error fetching rocket name: {}".format(response.status_code))
 
         # Print rocket usage
         sorted_rockets = sorted(
@@ -54,4 +54,4 @@ if __name__ == "__main__":
 
         for rocket, frequency in sorted_rockets:
             rocket_name = rocket_names.get(rocket, 'Unknown')
-            print(f"{rocket_name}: {frequency}")
+            print("{}: {}".format(rocket_name, frequency))
