@@ -37,7 +37,7 @@ if __name__ == '__main__':
     launchpad_local = launchpad["locality"]
 
     # Format the output string
-    string = "{} ({}) & {} ({}) - {} ({})".format(
+    string = "{} ({}) & {} - {} ({})".format(
         launch_name, rocket_name, date, launchpad_name, launchpad_local
     )
 
