@@ -4,11 +4,21 @@
 import requests
 
 
+def get_all_launches():
+    """ Fetch all launches, handling pagination """
+    launches_url = "https://api.spacexdata.com/v5/launches"
+    launches = []
+    while launches_url:
+        response = requests.get(launches_url)
+        data = response.json()
+        launches.extend(data['docs'])  # 'docs' contains the launch data
+        launches_url = data.get('next')  # 'next' is the URL for the next page
+    return launches
+
+
 if __name__ == "__main__":
     # Get all launches
-    launches_url = "https://api.spacexdata.com/v5/launches"
-    response = requests.get(launches_url)
-    launches = response.json()
+    launches = get_all_launches()
 
     # Create a dictionary to use as a tally
     rocket_frequency = {}
