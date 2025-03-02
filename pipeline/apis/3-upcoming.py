@@ -1,33 +1,73 @@
 #!/usr/bin/env python3
-
-""" Return list of ships"""
+"""Display upcoming SpaceX launch information"""
 
 import requests
-import sys
-import time
+
+def main():
+    """
+    Fetches and displays the upcoming SpaceX launch information.
+
+    The function retrieves data from the SpaceX API, identifies the soonest
+    upcoming launch, and prints the launch name, date, rocket name, and
+    launchpad details in the specified format.
+
+    Returns:
+        None
+    """
+    # SpaceX API endpoint for upcoming launches
+    url = "https://api.spacexdata.com/v4/launches/upcoming"
+    
+    # Make a request to the SpaceX API
+    res = requests.get(url)
+
+    # Check if the request was successful
+    if res.status_code != 200:
+        print("Failed to retrieve data from SpaceX API, status code:", res.status_code)
+        return
+
+    # Parse the JSON response
+    launches = res.json()
+
+    # Initialize variables to track the soonest upcoming launch
+    soonest_launch = None
+
+    # Iterate through the upcoming launches to find the soonest one
+    for launch in launches:
+        if soonest_launch is None or launch["date_unix"] < soonest_launch["date_unix"]:
+            soonest_launch = launch
+
+    # If no upcoming launch is found, exit
+    if soonest_launch is None:
+        print("No upcoming launches found.")
+        return
+
+    # Extract the required information
+    launch_name = soonest_launch["name"]
+    date = soonest_launch["date_local"]
+    rocket_id = soonest_launch["rocket"]
+    launchpad_id = soonest_launch["launchpad"]
+
+    # Fetch rocket name
+    rocket_res = requests.get("https://api.spacexdata.com/v4/rockets/{}".format(rocket_id))
+    if rocket_res.status_code != 200:
+        print("Failed to retrieve rocket data, status code:", rocket_res.status_code)
+        return
+    rocket_name = rocket_res.json()["name"]
+
+    # Fetch launchpad details
+    launchpad_res = requests.get("https://api.spacexdata.com/v4/launchpads/{}".format(launchpad_id))
+    if launchpad_res.status_code != 200:
+        print("Failed to retrieve launchpad data, status code:", launchpad_res.status_code)
+        return
+    launchpad = launchpad_res.json()
+    launchpad_name = launchpad["name"]
+    launchpad_locality = launchpad["locality"]
+
+    # Format the output string
+    output = "{} ({}) {} - {} ({})".format(
+        launch_name, date, rocket_name, launchpad_name, launchpad_locality
+    )
+    print(output)
 
 if __name__ == "__main__":
-    res = requests.get(sys.argv[1])
-
-    if res.status_code == 403:
-        rate_limit = int(res.headers.get('X-Ratelimit-Reset'))
-        current_time = int(time.time())
-        diff = (rate_limit - current_time) // 60
-        print("Reset in {} min".format(diff))
-        # get remaining rate
-
-    elif res.status_code == 404:
-        print("Not found")
-    elif res.status_code == 200:
-        res = res.json()
-        
-        # Print all the data to check the structure
-        print(res)
-
-        # Assuming the structure contains detailed data, print location
-        # Change this based on your actual response structure
-        if 'location' in res:
-            print(res['location'])
-        else:
-            # If 'location' key doesn't exist, look for other keys
-            print("Location not found in the response")
+    main()
