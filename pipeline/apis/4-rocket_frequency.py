@@ -14,7 +14,7 @@ if __name__ == '__main__':
             rocket_dict[launch["rocket"]] += 1
         else:
             rocket_dict[launch["rocket"]] = 1
-    # Sort by the count first and then by the name alphabetically (for tie-breaking)
+    # Sort by the count first and then by the name alphabetically.
     sorted_rockets = sorted(
         rocket_dict.items(), key=lambda kv: (-kv[1], kv[0])
     )
