@@ -32,7 +32,8 @@ def get_user_location(api_url):
             print("Not found")
         elif res.status_code == 200:
             user_data = res.json()
-            print(user_data.get('location', 'Location not provided'))
+            location = user_data.get('location', 'Location not provided')
+            print(location)
         else:
             print("Error: Received status code {}".format(res.status_code))
 
