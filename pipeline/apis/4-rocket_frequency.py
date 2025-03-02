@@ -1,33 +1,41 @@
 #!/usr/bin/env python3
-
+""" Calculates how many launches each rocket has been used
+"""
 import requests
-from collections import defaultdict
 
-def get_rocket_launches():
-    # Fetch the launches data from the SpaceX API
-    response = requests.get('https://api.spacexdata.com/v4/launches')
-    response.raise_for_status()  # Raise an error for bad responses
+
+if __name__ == "__main__":
+    # Get all launches
+    launches_url = "https://api.spacexdata.com/v5/launches"
+    response = requests.get(launches_url)
     launches = response.json()
-    
-    # Dictionary to count launches per rocket
-    rocket_count = defaultdict(int)
 
-    # Count the number of launches for each rocket
+    # Create a dictionary to use as a tally
+    rocket_frequency = {}
+
+    # Count launches per rocket
     for launch in launches:
         rocket_id = launch['rocket']
-        # Fetch rocket information using the rocket ID
-        rocket_info_response = requests.get(f'https://api.spacexdata.com/v4/rockets/{rocket_id}')
-        rocket_info_response.raise_for_status()  # Raise an error for bad responses
-        rocket_info = rocket_info_response.json()
-        rocket_name = rocket_info['name']
-        rocket_count[rocket_name] += 1
 
-    # Sort the rockets by number of launches (descending) and then by name (ascending)
-    sorted_rockets = sorted(rocket_count.items(), key=lambda x: (-x[1], x[0]))
+        if rocket_id in rocket_frequency:
+            rocket_frequency[rocket_id]['frequency'] += 1
+        else:
+            rocket_frequency[rocket_id] = {}
+            rocket_frequency[rocket_id]['frequency'] = 1
 
-    return sorted_rockets
+    # Get names for each rocket
+    for id in rocket_frequency.keys():
+        rocket_url = "https://api.spacexdata.com/v4/rockets/{}".format(id)
+        response = requests.get(rocket_url)
+        rocket = response.json()
+        rocket_name = rocket['name']
+        rocket_frequency[id]['name'] = rocket_name
 
-if __name__ == '__main__':
-    rocket_launches = get_rocket_launches()
-    for rocket, count in rocket_launches:
-        print(f"{rocket}: {count}")
+    # Sort the rockets
+    sorted_rockets = sorted(
+        rocket_frequency.items(),
+        key=lambda rocket: (-rocket[1]["frequency"], rocket[1]["name"])
+    )
+
+    for rocket, info in sorted_rockets:
+        print("{}: {}".format(info['name'], info['frequency']))
