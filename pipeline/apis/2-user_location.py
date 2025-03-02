@@ -1,25 +1,29 @@
 #!/usr/bin/env python3
 
-
-""" Return list of ships"""
+""" Return the location of a specific GitHub user """
 
 import requests
 import sys
 import time
 
-
-if __name__ == "__main__":
-    res = requests.get(sys.argv[1])
+def get_user_location(api_url):
+    res = requests.get(api_url)
 
     if res.status_code == 403:
-        rate_limit = int(res.headers.get('X-Ratelimit-Reset'))
+        rate_limit_reset = int(res.headers.get('X-Ratelimit-Reset', 0))
         current_time = int(time.time())
-        diff = (rate_limit - current_time) // 60
+        diff = (rate_limit_reset - current_time) // 60
         print("Reset in {} min".format(diff))
-        # get remaining rate
-
     elif res.status_code == 404:
         print("Not found")
     elif res.status_code == 200:
-        res = res.json()
-        print(res['location'])
+        user_data = res.json()
+        print(user_data.get('location', 'Location not provided'))
+
+if __name__ == "__main__":
+    if len(sys.argv) != 2:
+        print("Usage: ./2-user_location.py <API_URL>")
+        sys.exit(1)
+
+    api_url = sys.argv[1]
+    get_user_location(api_url)
