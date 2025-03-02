@@ -2,48 +2,21 @@
 """Pipeline Api"""
 import requests
 
-def fetch_launches():
+
+if __name__ == '__main__':
+    """pipeline api"""
     url = "https://api.spacexdata.com/v4/launches"
-    response = requests.get(url)
-    if response.status_code == 200:
-        return response.json()
-    else:
-        print("Failed to fetch data from the SpaceX API")
-        return []
+    r = requests.get(url)
+    rocket_dict = {"5e9d0d95eda69955f709d1eb": 0}
 
-def count_launches_per_rocket(launches):
-    rocket_count = {}
-    for launch in launches:
-        rocket_name = launch['rocket']
-        if rocket_name in rocket_count:
-            rocket_count[rocket_name] += 1
+    for launch in r.json():
+        if launch["rocket"] in rocket_dict:
+            rocket_dict[launch["rocket"]] += 1
         else:
-            rocket_count[rocket_name] = 1
-    return rocket_count
+            rocket_dict[launch["rocket"]] = 1
+    for key, value in sorted(rocket_dict.items(),
+                             key=lambda kv: kv[1], reverse=True):
+        rurl = "https://api.spacexdata.com/v4/rockets/" + key
+        req = requests.get(rurl)
 
-def get_rocket_name(rocket_id):
-    url = f"https://api.spacexdata.com/v4/rockets/{rocket_id}"
-    response = requests.get(url)
-    if response.status_code == 200:
-        return response.json()['name']
-    else:
-        return f"Unknown Rocket ({rocket_id})"
-
-def main():
-    launches = fetch_launches()
-    rocket_count = count_launches_per_rocket(launches)
-    
-    # Map rocket IDs to names
-    rocket_name_count = {}
-    for rocket_id, count in rocket_count.items():
-        rocket_name = get_rocket_name(rocket_id)
-        rocket_name_count[rocket_name] = count
-    
-    # Sort by count descending, then by name ascending
-    sorted_rockets = sorted(rocket_name_count.items(), key=lambda x: (-x[1], x[0]))
-    
-    for rocket_name, count in sorted_rockets:
-        print(f"{rocket_name}: {count}")
-
-if __name__ == "__main__":
-    main()
+        print(req.json()["name"] + ": " + str(value))
