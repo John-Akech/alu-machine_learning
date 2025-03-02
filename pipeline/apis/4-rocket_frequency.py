@@ -1,33 +1,41 @@
 #!/usr/bin/env python3
 
 import requests
-from collections import defaultdict
+from collections import Counter
 
-def get_rocket_launches():
-    # Fetch the launches data from the SpaceX API
-    response = requests.get('https://api.spacexdata.com/v4/launches')
-    response.raise_for_status()  # Raise an error for bad responses
-    launches = response.json()
-    
-    # Dictionary to count launches per rocket
-    rocket_count = defaultdict(int)
+def get_launches():
+    # SpaceX API endpoint for launches
+    url = 'https://api.spacexdata.com/v4/launches'
+    launches = []
 
-    # Count the number of launches for each rocket
-    for launch in launches:
-        rocket_id = launch['rocket']
-        # Fetch rocket information using the rocket ID
-        rocket_info_response = requests.get(f'https://api.spacexdata.com/v4/rockets/{rocket_id}')
-        rocket_info_response.raise_for_status()  # Raise an error for bad responses
-        rocket_info = rocket_info_response.json()
-        rocket_name = rocket_info['name']
-        rocket_count[rocket_name] += 1
+    # Fetch data in pages (SpaceX API supports pagination)
+    page = 1
+    while True:
+        response = requests.get(url + '?page=' + str(page))
+        data = response.json()
+        
+        if not data:
+            break
+        
+        # Collect rocket names from each launch
+        launches.extend(launch['rocket'] for launch in data)
+        page += 1
 
-    # Sort the rockets by number of launches (descending) and then by name (ascending)
+    return launches
+
+def main():
+    # Get list of all rocket names from launches
+    launches = get_launches()
+
+    # Count the number of launches per rocket
+    rocket_count = Counter(launches)
+
+    # Sort first by the number of launches (descending), then alphabetically
     sorted_rockets = sorted(rocket_count.items(), key=lambda x: (-x[1], x[0]))
 
-    return sorted_rockets
+    # Print the results
+    for rocket, count in sorted_rockets:
+        print('{}: {}'.format(rocket, count))
 
 if __name__ == '__main__':
-    rocket_launches = get_rocket_launches()
-    for rocket, count in rocket_launches:
-        print(f"{rocket}: {count}")
+    main()
