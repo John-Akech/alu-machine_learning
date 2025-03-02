@@ -12,6 +12,7 @@ def get_all_launches():
         response = requests.get(launches_url)
         if response.status_code == 200:
             data = response.json()
+            print("Fetched data: ", data)  # Debugging: print the fetched data
             launches.extend(data['docs'])  # 'docs' contains the launch data
             launches_url = data.get('next')  # 'next' is the URL for the next page
         else:
@@ -32,6 +33,7 @@ if __name__ == "__main__":
 
         # Count launches per rocket
         for launch in launches:
+            print("Launch data: ", launch)  # Debugging: print each launch's data
             rocket_id = launch['rocket']
             rocket_frequency[rocket_id] = rocket_frequency.get(rocket_id, 0) + 1
 
