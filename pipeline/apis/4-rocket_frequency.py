@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 import requests
 from collections import defaultdict
 
@@ -15,7 +13,10 @@ def get_rocket_launches():
     # Count the number of launches for each rocket
     for launch in launches:
         rocket_id = launch['rocket']
-        rocket_info = requests.get(f'https://api.spacexdata.com/v4/rockets/{rocket_id}').json()
+        # Fetch rocket information using the rocket ID
+        rocket_info_response = requests.get(f'https://api.spacexdata.com/v4/rockets/{rocket_id}')
+        rocket_info_response.raise_for_status()  # Raise an error for bad responses
+        rocket_info = rocket_info_response.json()
         rocket_name = rocket_info['name']
         rocket_count[rocket_name] += 1
 
