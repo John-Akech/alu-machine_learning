@@ -28,11 +28,11 @@ if __name__ == '__main__':
             launch_number = dic["launchpad"]
 
     # Fetch rocket name
-    rurl = f"https://api.spacexdata.com/v4/rockets/{rocket_number}"
+    rurl = "https://api.spacexdata.com/v4/rockets/{}".format(rocket_number)
     rocket_name = requests.get(rurl).json()["name"]
 
     # Fetch launchpad details
-    lurl = f"https://api.spacexdata.com/v4/launchpads/{launch_number}"
+    lurl = "https://api.spacexdata.com/v4/launchpads/{}".format(launch_number)
     launchpad = requests.get(lurl).json()
     launchpad_name = launchpad["name"]
     launchpad_local = launchpad["locality"]
