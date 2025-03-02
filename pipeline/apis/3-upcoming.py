@@ -11,7 +11,13 @@ if __name__ == '__main__':
 
     # Check if the request was successful
     if r.status_code != 200:
-        print("Failed to retrieve data from SpaceX API")
+        print("Failed to retrieve data from SpaceX API, status code:", r.status_code)
+        exit(1)
+
+    # Check if the response is empty
+    data = r.json()
+    if not data:
+        print("No upcoming launches found.")
         exit(1)
 
     # Initialize variables to track the most recent launch
@@ -22,7 +28,7 @@ if __name__ == '__main__':
     launch_number = ""
 
     # Iterate through the upcoming launches
-    for dic in r.json():
+    for dic in data:
         new = int(dic["date_unix"])
         if recent is None or new < recent:
             recent = new
@@ -33,11 +39,19 @@ if __name__ == '__main__':
 
     # Fetch rocket name
     rurl = "https://api.spacexdata.com/v4/rockets/{}".format(rocket_number)
-    rocket_name = requests.get(rurl).json()["name"]
+    rocket_response = requests.get(rurl)
+    if rocket_response.status_code != 200:
+        print("Failed to retrieve rocket data, status code:", rocket_response.status_code)
+        exit(1)
+    rocket_name = rocket_response.json()["name"]
 
     # Fetch launchpad details
     lurl = "https://api.spacexdata.com/v4/launchpads/{}".format(launch_number)
-    launchpad = requests.get(lurl).json()
+    launchpad_response = requests.get(lurl)
+    if launchpad_response.status_code != 200:
+        print("Failed to retrieve launchpad data, status code:", launchpad_response.status_code)
+        exit(1)
+    launchpad = launchpad_response.json()
     launchpad_name = launchpad["name"]
     launchpad_local = launchpad["locality"]
 
