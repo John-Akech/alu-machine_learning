@@ -22,7 +22,7 @@ if __name__ == '__main__':
         if recent is None or new < recent:
             recent = new
             launch_name = dic["name"]
-            date = dic["date_local"]
+            date = dic["date_local"]  # Keep the date in the original format
             rocket_number = dic["rocket"]
             launch_number = dic["launchpad"]
 
@@ -37,7 +37,7 @@ if __name__ == '__main__':
     launchpad_local = launchpad["locality"]
 
     # Format the output string
-    string = "{} ({}) & {} - {} ({})".format(
+    string = "{} ({}) & {} ({}) - {} ({})".format(
         launch_name, rocket_name, date, launchpad_name, launchpad_local
     )
 
