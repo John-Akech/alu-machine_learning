@@ -2,7 +2,6 @@
 """Display upcoming SpaceX launch information"""
 
 import requests
-import sys
 
 def main():
     """
