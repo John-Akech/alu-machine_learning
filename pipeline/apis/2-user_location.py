@@ -14,7 +14,7 @@ def get_user_location(api_url):
         reset_time = int(response.headers.get('X-Ratelimit-Reset', 0))
         current_time = int(time.time())
         minutes_to_reset = (reset_time - current_time) // 60
-        print(f"Reset in {minutes_to_reset} min")
+        print("Reset in {} min".format(minutes_to_reset))
     else:
         user_data = response.json()
         location = user_data.get('location')
