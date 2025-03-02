@@ -1,45 +1,32 @@
 #!/usr/bin/env python3
-""" Get's the earliest upcoming launch from the unofficial SpaceX API.
-"""
+
 import requests
+from datetime import datetime
 
+# Function to fetch the upcoming launch from the SpaceX API
+def fetch_upcoming_launch():
+    url = "https://api.spacexdata.com/v4/launches/upcoming"
+    response = requests.get(url)
+    
+    if response.status_code == 200:
+        launches = response.json()
+        # Sort launches by date_unix and take the earliest one
+        upcoming_launch = sorted(launches, key=lambda x: x['date_unix'])[0]
+
+        # Extract relevant details
+        launch_name = upcoming_launch['name']
+        launch_date = datetime.utcfromtimestamp(upcoming_launch['date_unix'])
+        local_date = launch_date.strftime('%Y-%m-%d %H:%M:%S')  # Format date in local time
+        rocket_name = upcoming_launch['rocket']['name']
+        launchpad_name = upcoming_launch['launchpad']['name']
+        launchpad_locality = upcoming_launch['launchpad']['locality']
+
+        # Return the formatted output
+        return f"{launch_name} ({local_date}) {rocket_name} - {launchpad_name} ({launchpad_locality})"
+    else:
+        return "Error fetching upcoming launch data."
+
+# Main execution block to prevent code from running when imported
 if __name__ == '__main__':
-    # Getting all upcoming launches
-    upcoming_endpoint = 'https://api.spacexdata.com/v4/launches/upcoming'
-    response = requests.get(upcoming_endpoint)
-    upcoming_launches = response.json()
-
-    # Sorting them to get the earliest launch
-    sorted_launches = sorted(
-        upcoming_launches, key=lambda l: l['date_unix']
-    )
-    upcoming_launch = sorted_launches[0]
-
-    # Get the rocket for that launch
-    rocket_id = upcoming_launch['rocket']
-    rocket_url = 'https://api.spacexdata.com/v4/rockets/{}'.format(rocket_id)
-    response = requests.get(rocket_url)
-    rocket_name = response.json()['name']
-
-    # Get the launchpad to be used
-    launchpad_id = upcoming_launch['launchpad']
-    launchpad_url = 'https://api.spacexdata.com/v4/launchpads/{}'.format(
-        launchpad_id
-    )
-    response = requests.get(launchpad_url)
-    launchpad = response.json()
-    launchpad_name = launchpad['name']
-
-    # Get the locality and the local date
-    launchpad_locality = launchpad['locality']
-    date_local = upcoming_launch['date_local']
-
-    output = "{} ({}) {} - {} ({})".format(
-        upcoming_launch['name'],
-        date_local,
-        rocket_name,
-        launchpad_name,
-        launchpad_locality
-    )
-
-    print(output)
+    # Fetch and display the upcoming launch
+    print(fetch_upcoming_launch())
