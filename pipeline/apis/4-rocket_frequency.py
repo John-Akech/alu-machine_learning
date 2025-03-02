@@ -1,39 +1,25 @@
 #!/usr/bin/env python3
-"""Pipeline Api"""
+
+
+""" Return list of ships"""
+
 import requests
+import sys
+import time
 
-if __name__ == '__main__':
-    """pipeline api"""
-    url = "https://api.spacexdata.com/v4/launches"
-    r = requests.get(url)
 
-    # Debug: Check API response
-    print("Launches API Status Code:", r.status_code)
-    if r.status_code != 200:
-        print("Failed to fetch launches data")
-        exit(1)
+if __name__ == "__main__":
+    res = requests.get(sys.argv[1])
 
-    # Initialize an empty dictionary to count launches for each rocket
-    rocket_dict = {}
+    if res.status_code == 403:
+        rate_limit = int(res.headers.get('X-Ratelimit-Reset'))
+        current_time = int(time.time())
+        diff = (rate_limit - current_time) // 60
+        print("Reset in {} min".format(diff))
+        # get remaining rate
 
-    for launch in r.json():
-        if "rocket" not in launch:
-            continue  # Skip launches without a rocket field
-        rocket_id = launch["rocket"]
-        if rocket_id in rocket_dict:
-            rocket_dict[rocket_id] += 1
-        else:
-            rocket_dict[rocket_id] = 1
-
-    # Fetch rocket names and print the counts
-    for key, value in sorted(rocket_dict.items(), key=lambda kv: kv[1], reverse=True):
-        rurl = "https://api.spacexdata.com/v4/rockets/" + key
-        req = requests.get(rurl)
-
-        # Debug: Check Rocket API response
-        print("Rocket API Status Code for ID", key, ":", req.status_code)
-        if req.status_code == 200:
-            rocket_name = req.json()["name"]
-            print(rocket_name + ": " + str(value))
-        else:
-            print("Error fetching rocket name for ID " + key)
+    elif res.status_code == 404:
+        print("Not found")
+    elif res.status_code == 200:
+        res = res.json()
+        print(res['location'])
