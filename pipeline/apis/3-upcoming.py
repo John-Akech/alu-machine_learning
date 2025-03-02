@@ -2,7 +2,6 @@
 """Pipeline API"""
 
 import requests
-from datetime import datetime
 
 
 if __name__ == '__main__':
@@ -39,7 +38,7 @@ if __name__ == '__main__':
 
     # Format the output string
     string = "{} ({}) & {} - {} ({})".format(
-        launch_name, date, rocket_name, launchpad_name, launchpad_local
+        launch_name, rocket_name, date, launchpad_name, launchpad_local
     )
 
     print(string)
