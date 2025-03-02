@@ -22,7 +22,7 @@ if __name__ == "__main__":
                 reset_time = int(rate_limit)
                 current_time = int(time.time())
                 diff = (reset_time - current_time) // 60
-                print(f"Reset in {diff} min")
+                print("Reset in {} min".format(diff))
             else:
                 print("Rate limit exceeded, but reset time unavailable.")
         
@@ -34,7 +34,7 @@ if __name__ == "__main__":
             print(res_json.get("location", "No location provided"))
         
         else:
-            print(f"Unexpected error: {res.status_code}")
+            print("Unexpected error: {}".format(res.status_code))
 
     except requests.RequestException as e:
-        print(f"Error: {e}")
+        print("Error: {}".format(e))
