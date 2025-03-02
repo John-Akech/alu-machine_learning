@@ -1,46 +1,68 @@
 #!/usr/bin/env python3
-"""Pipeline Api"""
+
 import requests
+import sys
 
-if __name__ == '__main__':
-    """pipeline api"""
+def fetch_launch_data():
+    # SpaceX API URL for fetching launches data
     url = "https://api.spacexdata.com/v4/launches"
-    try:
-        r = requests.get(url)
-        r.raise_for_status()  # Raise an exception for HTTP errors
-    except requests.exceptions.RequestException as e:
-        print("Error fetching launches data: {}".format(e))
-        exit(1)
+    response = requests.get(url)
+    
+    if response.status_code != 200:
+        print(f"Error fetching data: {response.status_code}")
+        return {}
+    
+    return response.json()
 
-    # Debug: Check if the launches data is fetched
-    launches = r.json()
-    if not launches:
-        print("No launches data found.")
-        exit(1)
+def fetch_rocket_names():
+    # SpaceX API URL for fetching rocket data
+    url = "https://api.spacexdata.com/v4/rockets"
+    response = requests.get(url)
+    
+    if response.status_code != 200:
+        print(f"Error fetching rocket names: {response.status_code}")
+        return {}
+    
+    rockets = response.json()
+    rocket_names = {rocket["id"]: rocket["name"] for rocket in rockets}
+    
+    return rocket_names
 
-    # Initialize an empty dictionary to count launches for each rocket
-    rocket_dict = {}
-
-    # Count launches for each rocket
+def count_launches_by_rocket(launches):
+    rocket_launch_count = {}
+    
     for launch in launches:
-        if "rocket" not in launch:
-            continue  # Skip launches without a rocket field
         rocket_id = launch["rocket"]
-        if rocket_id in rocket_dict:
-            rocket_dict[rocket_id] += 1
+        if rocket_id in rocket_launch_count:
+            rocket_launch_count[rocket_id] += 1
         else:
-            rocket_dict[rocket_id] = 1
+            rocket_launch_count[rocket_id] = 1
+            
+    return rocket_launch_count
 
-    # Debug: Print the rocket_dict to see the counts
-    print("Rocket launch counts:", rocket_dict)
+def display_rocket_launches(rocket_launch_count, rocket_names):
+    # Sort by number of launches (descending), then by rocket name alphabetically
+    sorted_rockets = sorted(rocket_launch_count.items(), key=lambda x: (-x[1], rocket_names[x[0]]))
+    
+    for rocket_id, count in sorted_rockets:
+        rocket_name = rocket_names.get(rocket_id, "Unknown")
+        print(f"{rocket_name}: {count}")
 
-    # Fetch rocket names and print the counts
-    for key, value in sorted(rocket_dict.items(), key=lambda kv: kv[1], reverse=True):
-        rurl = "https://api.spacexdata.com/v4/rockets/{}".format(key)
-        try:
-            req = requests.get(rurl)
-            req.raise_for_status()  # Raise an exception for HTTP errors
-            rocket_name = req.json()["name"]
-            print("{}: {}".format(rocket_name, value))
-        except requests.exceptions.RequestException as e:
-            print("Error fetching rocket name for ID {}: {}".format(key, e))
+if __name__ == "__main__":
+    # Fetch launches data
+    launches = fetch_launch_data()
+
+    if not launches:
+        sys.exit(1)
+
+    # Fetch rocket names
+    rocket_names = fetch_rocket_names()
+
+    if not rocket_names:
+        sys.exit(1)
+
+    # Count launches per rocket
+    rocket_launch_count = count_launches_by_rocket(launches)
+
+    # Display the results
+    display_rocket_launches(rocket_launch_count, rocket_names)
