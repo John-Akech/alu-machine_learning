@@ -18,7 +18,7 @@ def get_user_location(api_url):
     None: Prints the user's location or an error message if not found.
 
     Raises:
-    requests.exceptions.RequestException: If there is an issue with the HTTP request.
+    requests.exceptions.RequestException: If there's an HTTP request issue.
     """
     try:
         res = requests.get(api_url)
