@@ -1,25 +1,45 @@
 #!/usr/bin/env python3
-
-
-""" Return list of ships"""
-
+""" Get's the earliest upcoming launch from the unofficial SpaceX API.
+"""
 import requests
-import sys
-import time
 
+if __name__ == '__main__':
+    # Getting all upcoming launches
+    upcoming_endpoint = 'https://api.spacexdata.com/v4/launches/upcoming'
+    response = requests.get(upcoming_endpoint)
+    upcoming_launches = response.json()
 
-if __name__ == "__main__":
-    res = requests.get(sys.argv[1])
+    # Sorting them to get the earliest launch
+    sorted_launches = sorted(
+        upcoming_launches, key=lambda l: l['date_unix']
+    )
+    upcoming_launch = sorted_launches[0]
 
-    if res.status_code == 403:
-        rate_limit = int(res.headers.get('X-Ratelimit-Reset'))
-        current_time = int(time.time())
-        diff = (rate_limit - current_time) // 60
-        print("Reset in {} min".format(diff))
-        # get remaining rate
+    # Get the rocket for that launch
+    rocket_id = upcoming_launch['rocket']
+    rocket_url = 'https://api.spacexdata.com/v4/rockets/{}'.format(rocket_id)
+    response = requests.get(rocket_url)
+    rocket_name = response.json()['name']
 
-    elif res.status_code == 404:
-        print("Not found")
-    elif res.status_code == 200:
-        res = res.json()
-        print(res['location'])
+    # Get the launchpad to be used
+    launchpad_id = upcoming_launch['launchpad']
+    launchpad_url = 'https://api.spacexdata.com/v4/launchpads/{}'.format(
+        launchpad_id
+    )
+    response = requests.get(launchpad_url)
+    launchpad = response.json()
+    launchpad_name = launchpad['name']
+
+    # Get the locality and the local date
+    launchpad_locality = launchpad['locality']
+    date_local = upcoming_launch['date_local']
+
+    output = "{} ({}) {} - {} ({})".format(
+        upcoming_launch['name'],
+        date_local,
+        rocket_name,
+        launchpad_name,
+        launchpad_locality
+    )
+
+    print(output)
