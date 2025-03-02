@@ -39,14 +39,14 @@ def main():
     launchpad_id = soonest_launch["launchpad"]
 
     # Fetch rocket name
-    rocket_res = requests.get(f"https://api.spacexdata.com/v4/rockets/{rocket_id}")
+    rocket_res = requests.get("https://api.spacexdata.com/v4/rockets/{}".format(rocket_id))
     if rocket_res.status_code != 200:
         print("Failed to retrieve rocket data, status code:", rocket_res.status_code)
         return
     rocket_name = rocket_res.json()["name"]
 
     # Fetch launchpad details
-    launchpad_res = requests.get(f"https://api.spacexdata.com/v4/launchpads/{launchpad_id}")
+    launchpad_res = requests.get("https://api.spacexdata.com/v4/launchpads/{}".format(launchpad_id))
     if launchpad_res.status_code != 200:
         print("Failed to retrieve launchpad data, status code:", launchpad_res.status_code)
         return
@@ -55,7 +55,9 @@ def main():
     launchpad_locality = launchpad["locality"]
 
     # Format the output string
-    output = f"{launch_name} ({date}) {rocket_name} - {launchpad_name} ({launchpad_locality})"
+    output = "{} ({}) {} - {} ({})".format(
+        launch_name, date, rocket_name, launchpad_name, launchpad_locality
+    )
     print(output)
 
 if __name__ == "__main__":
