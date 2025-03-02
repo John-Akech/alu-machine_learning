@@ -7,6 +7,18 @@ import sys
 import time
 
 def get_user_location(api_url):
+    """
+    Fetches the location of a specific GitHub user from the provided API URL.
+
+    Parameters:
+    api_url (str): The API endpoint URL to fetch user data from.
+
+    Returns:
+    None: Prints the user's location if found, or an appropriate message if not.
+
+    Raises:
+    requests.exceptions.RequestException: If there is an issue with the HTTP request.
+    """
     try:
         res = requests.get(api_url)
 
@@ -19,7 +31,6 @@ def get_user_location(api_url):
             print("Not found")
         elif res.status_code == 200:
             user_data = res.json()
-            # Print the location or a default message if not provided
             print(user_data.get('location', 'Location not provided'))
         else:
             print("Error: Received status code {}".format(res.status_code))
