@@ -1,24 +1,30 @@
 #!/usr/bin/env python3
 
-""" Return list of ships"""
-
 import requests
 import sys
 import time
 
+def fetch_user_data(username):
+    url = f"https://api.github.com/users/{username}"
+    response = requests.get(url)
 
-if __name__ == "__main__":
-    res = requests.get(sys.argv[1])
-
-    if res.status_code == 403:
-        rate_limit = int(res.headers.get('X-Ratelimit-Reset'))
+    if response.status_code == 403:
+        rate_limit = int(response.headers.get('X-Ratelimit-Reset'))
         current_time = int(time.time())
         diff = (rate_limit - current_time) // 60
-        print("Reset in {} min".format(diff))
-        # get remaining rate
+        print(f"Reset in {diff} min")
+    elif response.status_code == 404:
+        print("User not found")
+    elif response.status_code == 200:
+        user_data = response.json()
+        print(f"User Location: {user_data.get('location', 'No location provided')}")
+    else:
+        print(f"Failed to fetch user data: {response.status_code}")
 
-    elif res.status_code == 404:
-        print("Not found")
-    elif res.status_code == 200:
-        res = res.json()
-        print(res['location'])
+if __name__ == "__main__":
+    if len(sys.argv) < 2:
+        print("Usage: python3 user_location.py <username>")
+        sys.exit(1)
+
+    username = sys.argv[1]
+    fetch_user_data(username)
