@@ -1,0 +1,28 @@
+# list_databases.py
+# This script lists all databases in MongoDB using Python
+
+from pymongo import MongoClient
+
+def list_databases():
+    try:
+        # Connect to MongoDB (default: localhost, port 27017)
+        client = MongoClient("mongodb://localhost:27017/")
+        
+        print("Connected to MongoDB successfully!")
+        print("Listing all databases:\n")
+        
+        # Get a list of all database names
+        database_names = client.list_database_names()
+        
+        # Iterate through each database and print its name and size
+        for db_name in database_names:
+            db = client[db_name]
+            stats = db.command("dbstats")
+            size_in_gb = stats["dataSize"] / (1024 ** 3)  # Convert bytes to GB
+            print(f"{db_name}\t{size_in_gb:.3f}GB")
+    
+    except Exception as e:
+        print(f"An error occurred: {e}")
+
+if __name__ == "__main__":
+    list_databases()
