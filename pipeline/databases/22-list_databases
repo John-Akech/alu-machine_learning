@@ -1,4 +1,4 @@
 // my comment
 
-# show all dbs
-echo "show dbs" | mongo
+// Show all databases in MongoDB
+show dbs
