@@ -1,2 +1,4 @@
+// my comment
+
 # show all dbs
-show dbs
+echo "show dbs" | mongo
