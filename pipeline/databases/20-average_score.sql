@@ -1,25 +1,22 @@
--- Procedure to add a bonus to a user for a project
-DELIMITER $$
+-- Create a stored procedure to compute the average score
+-- for a user and update the average_score column in the users table.
+DELIMITER //
 
-CREATE PROCEDURE AddBonus(
-    IN p_user_id INT,
-    IN p_project_name VARCHAR(255),
-    IN p_score INT
+CREATE PROCEDURE ComputeAverageScoreForUser (
+    IN user_id_param INT
 )
 BEGIN
-    DECLARE project_id INT;
-
-    -- Check if project exists
-    SELECT id INTO project_id FROM projects WHERE name = p_project_name;
-
-    -- If project doesn't exist, create it
-    IF project_id IS NULL THEN
-        INSERT INTO projects (name) VALUES (p_project_name);
-        SET project_id = LAST_INSERT_ID();
-    END IF;
-
-    -- Add correction
-    INSERT INTO corrections (user_id, project_id, score) VALUES (p_user_id, project_id, p_score);
-END $$
+    DECLARE user_avg_score FLOAT;
+    
+    -- Calculate average score for the user
+    SELECT AVG(score) INTO user_avg_score
+    FROM corrections
+    WHERE user_id = user_id_param;
+    
+    -- Update the average_score column in the users table
+    UPDATE users
+    SET average_score = user_avg_score
+    WHERE id = user_id_param;
+END //
 
 DELIMITER ;
