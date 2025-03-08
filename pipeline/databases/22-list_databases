@@ -1,2 +1,6 @@
-// show all dbs
-show dbs
+#!/bin/bash
+
+# Script to list all databases in MongoDB
+
+# Use the MongoDB shell to execute the 'show dbs' command
+echo "show dbs" | mongo --quiet
