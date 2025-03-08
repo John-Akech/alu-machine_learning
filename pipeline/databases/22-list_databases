@@ -1,2 +1,11 @@
-// show all dbs
-show dbs
+// 22-list_databases
+// This script lists all databases in MongoDB
+
+// Connect to the MongoDB server
+const dbs = db.adminCommand('listDatabases');
+
+// Print the databases
+print("Databases:");
+dbs.databases.forEach(function(database) {
+    print(database.name + "\t" + database.sizeOnDisk / (1024 * 1024) + "MB");
+});
