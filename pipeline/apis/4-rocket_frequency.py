@@ -14,8 +14,12 @@ if __name__ == '__main__':
             rocket_dict[launch["rocket"]] += 1
         else:
             rocket_dict[launch["rocket"]] = 1
-    for key, value in sorted(rocket_dict.items(),
-                             key=lambda kv: kv[1], reverse=True):
+    # Sort by the count first and then by the name alphabetically.
+    sorted_rockets = sorted(
+        rocket_dict.items(), key=lambda kv: (-kv[1], kv[0])
+    )
+
+    for key, value in sorted_rockets:
         rurl = "https://api.spacexdata.com/v4/rockets/" + key
         req = requests.get(rurl)
 
