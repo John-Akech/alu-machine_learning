@@ -1,141 +1,149 @@
 #!/usr/bin/env python3
-"""Train NeuralNetwork"""
-
+""" Neural Network
+"""
 
 import numpy as np
 
 
 class NeuralNetwork:
-    """NeuralNetwork class that defines a neural network with one hidden layer
-    performing binary classification"""
+    """ Class that defines a neural network with one hidden layer performing
+        binary classification.
+    """
 
     def __init__(self, nx, nodes):
-        """Class constructor
+        """ Instantiation function
 
-        nx: is the number of input features to the NeuralNetwork
-        nodes: is the number of nodes found in the hidden layer"""
-        if type(nx) is not int:
+        Args:
+            nx (int): size of the input layer
+            nodes (_type_): _description_
+        """
+        if not isinstance(nx, int):
             raise TypeError('nx must be an integer')
         if nx < 1:
             raise ValueError('nx must be a positive integer')
-        if type(nodes) is not int:
+
+        if not isinstance(nodes, int):
             raise TypeError('nodes must be an integer')
         if nodes < 1:
             raise ValueError('nodes must be a positive integer')
-        self.__W1 = np.random.normal(size=(nodes, nx))
-        self.__W2 = np.random.normal(size=(1, nodes))
-        self.__b1, self.__b2 = np.zeros(shape=(nodes, 1)), 0
-        self.__A1, self.__A2 = 0, 0
 
+        self.__W1 = np.random.randn(nodes, nx)
+        self.__b1 = np.zeros((nodes, 1))
+        self.__A1 = 0
+        self.__W2 = np.random.randn(1, nodes)
+        self.__b2 = 0
+        self.__A2 = 0
+
+    # getter functions
     @property
     def W1(self):
-        """getter function of attribute W"""
+        """Return weights vector for hidden layer"""
         return self.__W1
 
     @property
     def b1(self):
-        """getter function of attribute b"""
+        """Return bias for hidden layer"""
         return self.__b1
 
     @property
     def A1(self):
-        """getter function of attribute A"""
+        """Return activated output for hidden layer"""
         return self.__A1
 
     @property
     def W2(self):
-        """getter function of attribute W"""
+        """Return weights vector for output neuron"""
         return self.__W2
 
     @property
     def b2(self):
-        """getter function of attribute B"""
+        """Return bias for the output neuron"""
         return self.__b2
 
     @property
     def A2(self):
-        """getter function of attribute A"""
+        """Return activated output for the output neuron"""
         return self.__A2
 
     def forward_prop(self, X):
-        """Function that calculates the forward propagation of the
-        neural network
+        """ Calculates the forward propagation of the neural network
 
-        X: is a numpy.ndarray with shape (nx, m) that contains the input data
-
-        Return: the private attributes __A1 and __A2, respectively"""
-        x = np.matmul(self.W1, X) + self.b1
-        self.__A1 = 1 / (1 + np.e**(-x))
-        x = np.matmul(self.W2, self.__A1) + self.b2
-        self.__A2 = 1 / (1 + np.e**(-x))
+        Args:
+            X (numpy.array): Input data with shape (nx, m)
+        """
+        z = np.matmul(self.__W1, X) + self.__b1
+        sigmoid = 1 / (1 + np.exp(-z))
+        self.__A1 = sigmoid
+        z = np.matmul(self.__W2, self.__A1) + self.__b2
+        sigmoid = 1 / (1 + np.exp(-z))
+        self.__A2 = sigmoid
         return self.__A1, self.__A2
 
     def cost(self, Y, A):
-        """Function that calculates the cost of the model using logisitic
-        regression
+        """ Calculates the cost of the model using logistic regression
 
-        Y: is a numpy.ndarray with shape (1, m) that contains the correct
-        labels for the input data
-        A: is a numpy.ndarray with shape (1, m) containing the activated
-        output of the neuron for each example
-
-        Return: the cost"""
-        m = Y.shape[1]
-        a = 1.0000001 - A
-        x = - 1 / m * np.sum(Y * np.log(A) + (1 - Y) * np.log(a))
-        return x
+        Args:
+            Y (_type_): _description_
+            A (_type_): _description_
+        """
+        loss = -(Y * np.log(A) + (1 - Y) * np.log(1.0000001 - A))
+        cost = np.mean(loss)
+        return cost
 
     def evaluate(self, X, Y):
-        """Function that evaluates the neural network predictions
+        """ Evaluates the neural network’s predictions
 
-        X: is a numpy.ndarray with shape (nx, m) that contains the input data
-        Y: is a numpy.ndarray with shape (1, m) that contains the correct
-        labels for the input data
-
-        Return: the neuron prediction and the cost of the network, respectively
+        Args:
+            X (_type_): _description_
+            Y (_type_): _description_
         """
-        A = self.forward_prop(X)[1]
-        evaluation = np.where(A >= 0.5, 1, 0)
-        cost = self.cost(Y, self.A2)
-        return evaluation, cost
+        self.forward_prop(X)
+        return np.where(self.__A2 >= 0.5, 1, 0), self.cost(Y, self.__A2)
 
     def gradient_descent(self, X, Y, A1, A2, alpha=0.05):
-        """Function that aclculates one pass of gradient descent on the
-        neural network
+        """ Calculates one pass of gradient descent on the neural network
 
-        X: is a numpy.ndarray with shape (nx, m) that contains the input data
-        Y: is a numpy.ndarray with shape (1, m) that contains the correct
-        labels for the input data
-        A1: is the output of the hidden layer
-        A2: is the predicted output
-        alpha: is the learning rate"""
-        m = 1 / X.shape[1]
+        Args:
+            X (_type_): _description_
+            Y (_type_): _description_
+            A1 (_type_): _description_
+            A2 (_type_): _description_
+            alpha (float, optional): _description_. Defaults to 0.05.
+        """
+        
+        m = Y.shape[1]
         dz2 = A2 - Y
-        dz1 = np.dot(self.__W2.T, dz2) * A1 * (1 - A1)
-        dw = np.matmul(dz1, X.T) * m
-        self.__W1 = self.W1 - (alpha * dw)
-        self.__b1 = self.b1 - (alpha * dz1.mean(axis=1, keepdims=True))
-        dw = np.matmul(dz2, A1.T) * m
-        self.__W2 = self.W2 - (alpha * dw)
-        self.__b2 = self.b2 - (alpha * dz2.mean(axis=1, keepdims=True))
+        dw2 = np.matmul(A1, dz2.T) / m
+        db2 = np.sum(dz2, axis=1, keepdims=True) / m
+        
+        dz1 = np.matmul(self.__W2.T, dz2) * A1 * (1 - A1)
+        dw1 = np.matmul(X, dz1.T) / m
+        db1 = np.sum(dz1, axis=1, keepdims=True) / m
+        self.__W2 -= alpha * dw2.T
+        self.__b2 -= alpha * db2
+        self.__W1 -= alpha * dw1.T
+        self.__b1 -= alpha * db1
 
     def train(self, X, Y, iterations=5000, alpha=0.05):
-        """Function that trains the neuron
+        """ Trains the neural network
 
-        X: is a numpy.ndarray with shape (nx, m) that contains the input data
-        Y: is a numpy.ndarray with shape (1, m) that contains the correct
-        labels for the input data
-        iterations: is the number of iterations to train over
-        alpha: is the learning rate"""
-        if type(iterations) is not int:
+        Args:
+            X (_type_): _description_
+            Y (_type_): _description_
+            iterations (int, optional): _description_. Defaults to 5000.
+            alpha (float, optional): _description_. Defaults to 0.05.
+        """
+        if not isinstance(iterations, int):
             raise TypeError('iterations must be an integer')
-        if iterations < 0:
+        if iterations < 1:
             raise ValueError('iterations must be a positive integer')
-        if type(alpha) is not float:
+
+        if not isinstance(alpha, float):
             raise TypeError('alpha must be a float')
         if alpha < 0:
             raise ValueError('alpha must be positive')
-        for _ in range(iterations):
-            self.forward_prop(X)
-            self.gradient_descent(X, Y, self.A1, self.A2, alpha)
+
+        for i in range(iterations):
+            A1, A2 = self.forward_prop(X)
+            self.gradient_descent(X, Y, A1, A2, alpha)
         return self.evaluate(X, Y)

@@ -1,3 +1,1 @@
-Introduction to Machine Learning
-
-Classification
+# Classification
